@@ -1,5 +1,6 @@
 import os, shutil
 
+# 复制特定文件夹内所有文件名带关键字的文件到指定文件夹
 if __name__ == '__main__':
 
     # 源文件夹路径
@@ -23,4 +24,4 @@ if __name__ == '__main__':
             # 如果文件名里有关键字
             if key_word in filename:
                 # 复制该文件到输出文件夹
-                path = shutil.copy(file_path, target_file_path + '/'+filename)
+                path = shutil.copy(file_path, target_file_path + '/' + filename)
