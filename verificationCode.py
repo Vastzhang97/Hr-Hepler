@@ -80,7 +80,7 @@ def OCR_lmj(img_path):
     out = imgry.point(table, '1')
 
     # 去掉图片中的噪声（孤立点）
-    out = cut_noise(out)
+    #out = cut_noise(out)
 
     # 保存图片
     # out.save('E://figures/img_gray.jpg')
@@ -88,11 +88,12 @@ def OCR_lmj(img_path):
     # 仅识别图片中的数字
     # text = pytesseract.image_to_string(out, config='digits')
     # 识别图片中的数字和字母
-    text = pytesseract.image_to_string(out)
+    text = pytesseract.image_to_string(img_path)
 
+    print(text)
     # 去掉识别结果中的特殊字符
-    exclude_char_list = ' .:\\|\'\"?![],()~@#$%^&*_+-={};<>/¥'
-    text = ''.join([x for x in text if x not in exclude_char_list])
+    # exclude_char_list = ' .://|/'/"?![],()~@#$%^&*_+-={};<>/¥'
+    # text = ''.join([x for x in text if x not in exclude_char_list])
     # print(text)
 
     return text
@@ -105,7 +106,7 @@ def main():
 
     correct_count = 0  # 图片总数
     total_count = 0  # 识别正确的图片数量
-
+    '''
     # 遍历figures下的png,jpg文件
     for file in os.listdir(dir):
         if file.endswith('.png') or file.endswith('.jpg'):
@@ -124,9 +125,9 @@ def main():
     print('Total count: %d, correct: %d.' % (total_count, correct_count))
     '''
     # 单张图片识别
-    image_path = 'E://figures/code (1).jpg'
+    image_path = 'C://Users/developer/Desktop/CheckCode.png'
     OCR_lmj(image_path)
-    '''
+
 
 
 main()
