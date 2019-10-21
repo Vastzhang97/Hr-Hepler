@@ -9,13 +9,13 @@ import re
 from util.BaiduApiUtil import BaiDuApi
 
 
-def search():
+def search(name, id_num):
     name_input = driver.find_element_by_xpath("//input[@id='ctl00_ContentPlaceHolder1_txtPersonName']")
     name_input.clear()
-    name_input.send_keys("韦聪")
+    name_input.send_keys(name)
     num_input = driver.find_element_by_xpath("//input[@id='ctl00_ContentPlaceHolder1_txtIdnum']")
     num_input.clear()
-    num_input.send_keys("440102198311083621")
+    num_input.send_keys(id_num)
     search_btn = driver.find_element_by_xpath("//input[@id='ctl00_ContentPlaceHolder1_btnSearch']")
     verification_code_input = driver.find_element_by_xpath("//input[@id='ctl00_ContentPlaceHolder1_txtCheckCode']")
     verification_code = driver.find_element_by_xpath("//a/img[@id='CheckCodeImage']")
@@ -39,7 +39,7 @@ def search():
     verification_code_input.send_keys(code)
     search_btn.click()
     driver.switch_to.alert.accept()
-    search()
+    search(name, id_num)
 
 
 def get_result(html_str):
@@ -61,7 +61,7 @@ driver.maximize_window()
 driver.get(url)
 time.sleep(1)
 try:
-    search()
+    search("韦聪", "440102198311083621")
 except NoAlertPresentException as e:
     pass
 
@@ -82,4 +82,4 @@ for index, item in enumerate(result_list):
     driver.close()
     driver.switch_to.window(index_handle)
 
-# driver.quit()
+driver.quit()
