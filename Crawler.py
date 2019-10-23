@@ -1,7 +1,7 @@
 from selenium import webdriver
 import time
 from PIL import Image
-from selenium.common.exceptions import UnexpectedAlertPresentException, NoAlertPresentException
+from selenium.common.exceptions import UnexpectedAlertPresentException, NoAlertPresentException, NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from util import Util
@@ -88,6 +88,7 @@ licence_issuing_column = 7
 date_column = 8
 validity_column = 9
 has_crawling_column = 10
+url_column = 11
 
 util = Util.Util()
 driver = webdriver.Chrome()
@@ -101,12 +102,13 @@ current_max_row = ws.max_row
 current_row = 2
 data_first_row = 2
 for i in range(1, current_max_row):
+    insert_row_num = 0
     if i is 1:
         continue
     value = ws.cell(current_row, has_crawling_column).value
+    name = ws.cell(current_row, name_column).value
+    id_num = ws.cell(current_row, id_num_column).value
     if value is None:
-        name = ws.cell(current_row, name_column).value
-        id_num = ws.cell(current_row, id_num_column).value
         print("--------------------------")
         print("name " + name)
         print("id_num " + id_num)
@@ -123,10 +125,17 @@ for i in range(1, current_max_row):
                 time.sleep(1)
                 item.click()
                 util.switch_to_new_window(driver, index_handle)
-                company_div = driver.find_element_by_xpath(
-                    "//div[@class='spec-item-4'][4]/div[@class='spec-item']/h5/a")
-                company = company_div.get_attribute("innerHTML")
-                ws.cell(current_row, company_column).value = company
+                time.sleep(2)
+                url = driver.current_url
+                print("url " + url)
+                ws.cell(current_row, url_column).value = url
+                try:
+                    company_div = driver.find_element_by_xpath(
+                        "//div[@class='spec-item-4'][4]/div[@class='spec-item']/h5/a")
+                    company = company_div.get_attribute("innerHTML")
+                    ws.cell(current_row, company_column).value = company
+                except NoSuchElementException as e:
+                    print("无在职单位")
                 information_div = driver.find_elements_by_xpath("//div[@class='spec-display']")
                 information = ""
                 for index3, item3 in enumerate(information_div):
@@ -147,7 +156,6 @@ for i in range(1, current_max_row):
                 num = information.count(start_str2)
                 pos3 = 0
                 pos4 = 0
-                insert_row_num = 0
                 for j in range(num):
                     if j is not 0 and j % 5 is 0:
                         current_row += 1
@@ -179,8 +187,8 @@ for i in range(1, current_max_row):
                         ws.cell(current_row, validity_column).value = validity
                 driver.close()
                 driver.switch_to.window(index_handle)
-    data_first_row = data_first_row + insert_row_num
-    ws.cell(data_first_row, has_crawling_column).value = "是"
+    # data_first_row = data_first_row + insert_row_num
+    ws.cell(current_row, has_crawling_column).value = name
     wb.save(file)
     data_first_row += 1
     current_row += 1
